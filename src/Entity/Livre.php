@@ -20,8 +20,17 @@ class Livre
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $datePublication = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $disponible = null;
+    // Piloté dans les endpoints borrow/return (true par défaut)
+    #[ORM\Column(type: 'boolean')]
+    private bool $disponible = true;
+
+    #[ORM\ManyToOne(targetEntity: Auteur::class, inversedBy: 'livres')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Auteur $auteur = null;
+
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'livres')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $categorie = null;
 
     public function getId(): ?int
     {
@@ -33,10 +42,9 @@ class Livre
         return $this->titre;
     }
 
-    public function setTitre(string $titre): static
+    public function setTitre(string $titre): self
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -45,22 +53,42 @@ class Livre
         return $this->datePublication;
     }
 
-    public function setDatePublication(\DateTimeImmutable $datePublication): static
+    public function setDatePublication(\DateTimeImmutable $datePublication): self
     {
         $this->datePublication = $datePublication;
-
         return $this;
     }
 
-    public function isDisponible(): ?bool
+    public function isDisponible(): bool
     {
         return $this->disponible;
     }
 
-    public function setDisponible(?bool $disponible): static
+    public function setDisponible(bool $disponible): self
     {
         $this->disponible = $disponible;
+        return $this;
+    }
 
+    public function getAuteur(): ?Auteur
+    {
+        return $this->auteur;
+    }
+
+    public function setAuteur(?Auteur $auteur): self
+    {
+        $this->auteur = $auteur;
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
         return $this;
     }
 }
